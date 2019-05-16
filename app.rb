@@ -2,10 +2,12 @@ require 'sinatra'
 require 'slim'
 require 'sqlite3'
 require 'bcrypt'
+require_relative 'module.rb'
 
+include MyModule
 enable :sessions
 
-db = SQLite3::Database.new("db/database.db")
+db = SQLite3::Database.new("db/dates.db")
 db.results_as_hash = true
 
 get('/') do
@@ -17,22 +19,22 @@ get('/newuser') do
 end
 
 post('/register') do
-    hashedpassword = BCrypt::
-    begin
-        db.execute("INSERT INTO users(username,password) VALUES (?,?)",params["username"],hashedpassword)
-    rescue SQLite3::ConstraintException => exception
-        session[:usernameerror] = true
-        redirect('/newuser')
-    end
-    session[:username] = params["username"]
-    redirect('/welcome')
+    register(params['username'],params['password'])
 end
 
+post('/login') do
+    login(params['username'],params['password'])
+    if session[:usernameerror] == true
+        redirect('/newuser')
+    elsif
+        session[:username] == true
+        redirect('/welcome')
+    end
+
+end
 
 get('/welcome') do
-    if session[:username] == nil
-        redirect('/denied') 
-    end
+    
     slim(:welcome)
 end
 
