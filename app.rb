@@ -27,14 +27,14 @@ post('/login') do
     if session[:usernameerror] == true
         redirect('/newuser')
     elsif
-        session[:username] == true
-        redirect('/welcome')
+        session[:username] != nil
+        redirect('/welcome')    
     end
 
 end
 
 get('/welcome') do
-    
+    check_session()
     slim(:welcome)
 end
 
